@@ -1,7 +1,9 @@
-<template><div></div></template>
+<template><div>index</div></template>
 
 <script>
-export default {};
+export default {
+    name: 'Index',
+};
 </script>
 
 <style></style>
