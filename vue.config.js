@@ -1,4 +1,15 @@
-const { defineConfig } = require('@vue/cli-service')
+const { defineConfig } = require('@vue/cli-service');
 module.exports = defineConfig({
-  transpileDependencies: true
-})
+    lintOnSave: false,
+    transpileDependencies: true,
+    devServer: {
+        host: 'localhost',
+        port: 8080,
+        proxy:{
+            '/activity':{
+                target:'https://www.imooc.com',
+                changeOrigin:false
+            }
+        }
+    },
+});
