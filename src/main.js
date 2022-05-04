@@ -4,7 +4,14 @@ import axios from 'axios';
 import App from './App.vue';
 import router from './router';
 import store from './store';
-import env from './env';
+// import env from './env';
+
+// mock开关
+const mock = true;
+if (mock) {
+    // 此时需要使用require，执行时再加载
+    require('./mock/api');
+}
 
 // 根据前端跨域方式进行调整
 // 此时使用了代理，因此域名是一样的，这里使用/api，在代理转发时将api去掉
@@ -14,7 +21,7 @@ axios.defaults.timeout = 8000;
 
 // 使用jsonp或者cors时
 // 根据环境变量获取不同的请求地址
-axios.defaults.baseURL = env.baseURL;
+// axios.defaults.baseURL = env.baseURL;
 
 // axios响应拦截
 axios.interceptors.response.use(function (response) {
