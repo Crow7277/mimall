@@ -14,11 +14,11 @@ export default {
         SwiperSlide,
     },
     mounted() {
-        storage.setItem('a', 1);
-        storage.setItem('user', { a: 1 });
-        storage.setItem('abc', { b: 2 }, 'user');
-        // storage.clear('a');
-        storage.clear('a', 'user');
+        // storage.setItem('a', 1);
+        // storage.setItem('user', { a: 1 });
+        // storage.setItem('abc', { b: 2 }, 'user');
+        // // storage.clear('a');
+        // storage.clear('a', 'user');
     },
 };
 </script>
