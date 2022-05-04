@@ -1,4 +1,4 @@
-<template><div>index</div></template>
+<template><div></div></template>
 
 <script>
 export default {
@@ -6,4 +6,5 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+</style>
