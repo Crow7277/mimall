@@ -5,14 +5,8 @@
 </template>
 
 <script>
-import storage from '@/storage';
-import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
-import 'swiper/css/swiper.css';
 export default {
-    components: {
-        Swiper,
-        SwiperSlide,
-    },
+    components: {},
     data() {
         return {};
     },
