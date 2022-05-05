@@ -50,7 +50,7 @@
                         </li>
                     </ul>
                 </div>
-                <swiper ref="mySwiper" :options="swiperOptions" @some-swiper-event="callback">
+                <swiper ref="mySwiper" :options="swiperOptions">
                     <swiper-slide v-for="(item, index) in slideList" :key="index">
                         <a :href="'/#/product/' + item.id"><img :src="item.img" /></a>
                     </swiper-slide>
@@ -59,9 +59,17 @@
                     <div class="swiper-button-next" slot="button-next"></div>
                 </swiper>
             </div>
-            <div class="ads-box"></div>
-            <div class="banner"></div>
-            <div class="product-box"></div>
+            <div class="adsbox">
+                <a :href="'/#/product/' + item.id" v-for="(item, index) in adsList" :key="index">
+                    <img :src="item.img" />
+                </a>
+            </div>
+            <div class="banner">
+                <a href="/#/product/30">
+                    <img src="/imgs/banner-1.png" />
+                </a>
+            </div>
+            <div class="product-box">123123</div>
         </div>
         <ServiceBar></ServiceBar>
     </div>
@@ -81,8 +89,8 @@ export default {
                 loop: true,
                 effect: 'cube',
                 cubeEffect: {
-                    shadowOffset: 100,
-                    shadowScale: 0.6,
+                    shadowOffset: 70,
+                    shadowScale: 0.5,
                 },
                 pagination: {
                     el: '.swiper-pagination',
@@ -143,6 +151,24 @@ export default {
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
+            ],
+            adsList: [
+                {
+                    id: 33,
+                    img: require('/public/imgs/ads/ads-1.png'),
+                },
+                {
+                    id: 48,
+                    img: require('/public/imgs/ads/ads-2.jpg'),
+                },
+                {
+                    id: 45,
+                    img: require('/public/imgs/ads/ads-3.png'),
+                },
+                {
+                    id: 47,
+                    img: require('/public/imgs/ads/ads-4.jpg'),
+                },
             ],
         };
     },
@@ -231,6 +257,18 @@ export default {
                 height: 100%;
             }
         }
+    }
+    .adsbox {
+        @include flex();
+        margin-top: 14px;
+        margin-bottom: 13px;
+        a {
+            width: 296px;
+            height: 167px;
+        }
+    }
+    .banner {
+        margin-bottom: 50px;
     }
 }
 </style>
