@@ -146,14 +146,17 @@ export default {
                     // get方式需要使用params传参
                     params: {
                         categoryId: '100012',
+                        pageSize: 6,// 传递过来的书数据数
                     },
                 })
                 .then(res => {
-                    // 此时由于做了响应拦截，响应拦截中获取了data，所以res.list就是数据
-                    if (res.list.length > 6) {
-                        // 由于只展示6个商品，因此当长度大于6时，截取前六个数据
-                        this.phoneList = res.list.slice(0, 6);
-                    }
+                    this.phoneList = res.list
+                    // 由于可以通过pageSize来设置传递过来的数据个数，所以就不需要进行判断了
+                    // // 此时由于做了响应拦截，响应拦截中获取了data，所以res.list就是数据
+                    // if (res.list.length >= 6) {
+                    //     // 由于只展示6个商品，因此当长度大于6时，截取前六个数据
+                    //     this.phoneList = res.list.slice(0, 6);
+                    // }
                 });
         },
         goToCart() {
@@ -257,6 +260,7 @@ export default {
                         box-shadow: 0px 7px 6px 0px rgba(0, 0, 0, 0.11);
                         z-index: 10;
                         transition: all 0.5s;
+                        background-color: #fff;
                         .product {
                             position: relative;
                             float: left;
