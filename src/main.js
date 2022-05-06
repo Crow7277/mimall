@@ -4,6 +4,7 @@ import axios from 'axios';
 import App from './App.vue';
 import router from './router';
 import store from './store';
+import VueLazyload from 'vue-lazyload';
 // import env from './env';
 
 // 根据前端跨域方式进行调整
@@ -33,6 +34,8 @@ axios.interceptors.response.use(function (response) {
 
 Vue.config.productionTip = false;
 Vue.prototype.axios = axios;
+
+Vue.use(VueLazyload, { loading: require('/public/imgs/loading-svg/loading-bars.svg') });
 
 new Vue({
     router,

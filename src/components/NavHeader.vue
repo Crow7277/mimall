@@ -32,7 +32,7 @@
                                 <li class="product" v-for="(item, index) in phoneList" :key="index">
                                     <a :href="'/#/product' + item.id" target="_blank">
                                         <div class="pro-img">
-                                            <img :src="item.mainImage" :alt="item.subtitle" />
+                                            <img v-lazy="item.mainImage" :alt="item.subtitle" />
                                         </div>
                                         <div class="pro-name">{{ item.name }}</div>
                                         <div class="pro-price">{{ item.price | currency }}</div>
@@ -146,11 +146,11 @@ export default {
                     // get方式需要使用params传参
                     params: {
                         categoryId: '100012',
-                        pageSize: 6,// 传递过来的书数据数
+                        pageSize: 6, // 传递过来的书数据数
                     },
                 })
                 .then(res => {
-                    this.phoneList = res.list
+                    this.phoneList = res.list;
                     // 由于可以通过pageSize来设置传递过来的数据个数，所以就不需要进行判断了
                     // // 此时由于做了响应拦截，响应拦截中获取了data，所以res.list就是数据
                     // if (res.list.length >= 6) {
