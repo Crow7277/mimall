@@ -14,7 +14,7 @@
                     <a href="javascript:;">订单</a>
                     <a href="javascript:;" class="my-cart" @click="goToCart">
                         <span class="icon-cart"></span>
-                        购物车
+                        购物车({{ cartCount }})
                     </a>
                 </div>
             </div>
@@ -126,7 +126,6 @@ export default {
     name: 'nav-header',
     data() {
         return {
-            username: '',
             phoneList: [],
         };
     },
@@ -151,12 +150,6 @@ export default {
                 })
                 .then(res => {
                     this.phoneList = res.list;
-                    // 由于可以通过pageSize来设置传递过来的数据个数，所以就不需要进行判断了
-                    // // 此时由于做了响应拦截，响应拦截中获取了data，所以res.list就是数据
-                    // if (res.list.length >= 6) {
-                    //     // 由于只展示6个商品，因此当长度大于6时，截取前六个数据
-                    //     this.phoneList = res.list.slice(0, 6);
-                    // }
                 });
         },
         goToCart() {
@@ -164,6 +157,14 @@ export default {
         },
         login() {
             this.$router.push('/login');
+        },
+    },
+    computed: {
+        username() {
+            return this.$store.state.username;
+        },
+        cartCount() {
+            return this.$store.state.cartCount;
         },
     },
 };
@@ -191,6 +192,7 @@ export default {
                 background-color: #ff6600;
                 text-align: center;
                 color: #ffffff;
+                margin-right: 0;
                 .icon-cart {
                     @include bgImg(16px, 12px, '/public/imgs/icon-cart-checked.png', contain);
                     margin-right: 4px;
