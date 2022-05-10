@@ -128,7 +128,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import './../assets/scss/mixin.scss';
+@import '@/assets/scss/mixin.scss';
 .product {
     .content {
         .item-bg {

@@ -8,6 +8,7 @@ module.exports = defineConfig({
         proxy: {
             '/api': {
                 target: 'http://mall-pre.springboot.cn',
+                // target: 'http://mi.marsview.cc',
                 changeOrigin: true,
                 pathRewrite: {
                     '/api': '',

@@ -29,11 +29,14 @@ axios.interceptors.response.use(function (response) {
     } else if (res.status === 10) {
         // 当前项目中后端定义状态码为10时未登录
         // 此时不使用路由跳转的原因是路由是在Vue实例中的，这里是取不到的
-        if (path !== '#/index') window.location.href = '/#/login';
+        if (path !== '#/index') {
+            window.location.href = '/#/login';
+        }
+        return Promise.reject(res);
     } else {
         alert(res.msg);
         // 失败的话将错误排除
-        return Promise.reject();
+        return Promise.reject(res);
     }
 });
 
