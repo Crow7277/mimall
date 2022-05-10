@@ -1,7 +1,7 @@
 <template>
     <div class="nav-bar" :class="{ is_fixed: isFixed }">
         <div class="container">
-            <div class="pro-title">小米8</div>
+            <div class="pro-title">{{ title }}</div>
             <div class="pro-param">
                 <a href="javascript:;">概述</a>
                 <span>|</span>
@@ -17,6 +17,9 @@
 <script>
 export default {
     name: 'ProductParam',
+    props: {
+        title: String,
+    },
     data() {
         return {
             // 是否需要定位
