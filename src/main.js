@@ -6,6 +6,8 @@ import router from './router';
 import store from './store';
 import VueLazyload from 'vue-lazyload';
 import VueCookie from 'vue-cookie';
+import { Message } from 'element-ui';
+import 'element-ui/lib/theme-chalk/message.css';
 // import env from './env';
 
 // 根据前端跨域方式进行调整
@@ -34,17 +36,18 @@ axios.interceptors.response.use(function (response) {
         }
         return Promise.reject(res);
     } else {
-        alert(res.msg);
+        // alert(res.msg);
+        // Message.warning(res.msg);
         // 失败的话将错误排除
         return Promise.reject(res);
     }
 });
-
 Vue.config.productionTip = false;
 Vue.prototype.axios = axios;
 
 Vue.use(VueLazyload, { loading: require('/public/imgs/loading-svg/loading-bars.svg') });
 Vue.use(VueCookie);
+Vue.prototype.$message = Message;
 
 new Vue({
     router,

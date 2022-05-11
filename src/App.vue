@@ -11,8 +11,12 @@ export default {
         return {};
     },
     mounted() {
-        this.getUser();
-        this.getCartCount();
+        // 屏蔽掉没有必要的接口
+        // 如果是已经登录的状态,不需要额外获取用户信息于购物车数量
+        if (this.$cookie.get('userId')) {
+            this.getUser();
+            this.getCartCount();
+        }
     },
     methods: {
         getUser() {

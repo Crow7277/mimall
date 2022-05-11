@@ -11,6 +11,7 @@
                 <div class="topbar-user">
                     <a href="javascript:;" v-if="username">{{ username }}</a>
                     <a href="javascript:;" v-if="!username" @click="login">登录</a>
+                    <a href="javascript:;" v-if="username" @click="logout">退出</a>
                     <a href="javascript:;">订单</a>
                     <a href="javascript:;" class="my-cart" @click="goToCart">
                         <span class="icon-cart"></span>
@@ -137,6 +138,8 @@ export default {
     },
     mounted() {
         this.getProductList();
+        let params = this.$route.params;
+        if (params && params.from === 'login') this.getCartCount();
     },
     methods: {
         getProductList() {
@@ -157,6 +160,23 @@ export default {
         },
         login() {
             this.$router.push('/login');
+        },
+        getCartCount() {
+            this.axios.get('/carts/products/sum').then((res = 0) => {
+                this.$store.dispatch('saveCartCount', res);
+            });
+        },
+        logout() {
+            // 退出不需要返回值
+            this.axios.post('/user/logout').then(() => {
+                this.$message.success('退出登录成功');
+                // 清空用户cookie
+                this.$cookie.set('userId', '', { expires: '-1' });
+                // 将vuex中的用户名清空
+                this.$store.dispatch('saveUserName', '');
+                // 将vuex中的购物车数量归零
+                this.$store.dispatch('saveCartCount', 0);
+            });
         },
     },
     computed: {
