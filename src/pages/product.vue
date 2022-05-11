@@ -108,7 +108,8 @@ export default {
         getProductInfo() {
             // 利用params获取当前路由动态id
             let id = this.$route.params.id;
-            this.axios.get(`/productis/${id}`).then(res => {
+            this.axios.get(`/products/${id}`).then(res => {
+                console.log(res);
                 this.product = res;
             });
         },
