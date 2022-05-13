@@ -350,7 +350,7 @@ export default {
                     this.$router.push({
                         path: '/order/pay',
                         query: {
-                            orderNoL: res.orderNo,
+                            orderNo: res.orderNo,
                         },
                     });
                 });
