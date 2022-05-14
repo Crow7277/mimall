@@ -52,3 +52,4 @@ export default {
         window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(val));
     },
 };
+

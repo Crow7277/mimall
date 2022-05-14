@@ -1,10 +1,5 @@
 <template>
     <div class="order-pay">
-        <order-header title="订单支付">
-            <template v-slot:tip>
-                <span>请谨防钓鱼链接或诈骗电话，了解更多</span>
-            </template>
-        </order-header>
         <div class="wrapper">
             <div class="container">
                 <div class="order-wrap">
@@ -22,7 +17,7 @@
                         <div class="order-total">
                             <p>
                                 应付总额：
-                                <span>2599</span>
+                                <span>{{ payment }}</span>
                                 元
                             </p>
                             <p>
@@ -38,7 +33,7 @@
                     <div class="item-detail" v-if="showDetail">
                         <div class="item">
                             <div class="detail-title">订单号：</div>
-                            <div class="detail-info theme-color">{{ orderNo }}</div>
+                            <div class="detail-info theme-color">{{ orderId }}</div>
                         </div>
                         <div class="item">
                             <div class="detail-title">收货信息：</div>
@@ -54,20 +49,6 @@
                                         <img v-lazy="item.productImage" />
                                         {{ item.productName }}
                                     </li>
-                                    <!-- <li>
-                                        <img
-                                            src="https://cdn.cnbj0.fds.api.mi-img.com/b2c-mimall-media/2c9307e9690dfbca39d8de770a7a8664.png"
-                                            alt=""
-                                        />
-                                        小米8 青春 全网通版 6GB内存 深空灰 64GB
-                                    </li>
-                                    <li>
-                                        <img
-                                            src="https://cdn.cnbj0.fds.api.mi-img.com/b2c-mimall-media/2c9307e9690dfbca39d8de770a7a8664.png"
-                                            alt=""
-                                        />
-                                        小米8青春版 标准高透贴膜 高透
-                                    </li> -->
                                 </ul>
                             </div>
                         </div>
@@ -95,21 +76,44 @@
                 </div>
             </div>
         </div>
-        <scan-pay-code></scan-pay-code>
+        <ScanPayCode v-if="showPay" @close="closePayModal" :img="payImg"></ScanPayCode>
+        <Modal
+            title="支付确认"
+            btnType="3"
+            :showModal="showPayModal"
+            suerText="查看订单"
+            cancelText="未支付"
+            @cancel="showPayModal = false"
+            @submit="goOrderList"
+        >
+            <template v-slot:body>
+                <p>请确认是否完成支付?</p>
+            </template>
+        </Modal>
     </div>
 </template>
 
 <script>
+import QRCode from 'qrcode';
+import ScanPayCode from '@/components/ScanPayCode';
+import Modal from '@/components/Modal';
+
 export default {
-    name: 'order-pay',
+    name: 'orderPay',
+    components: { ScanPayCode, Modal, Modal },
     data() {
         return {
             // 由于订单号是通过query的方式传递的因此可以直接利用query获取
-            orderNo: this.$route.query.orderNo,
+            orderId: this.$route.query.orderNo,
             addressInfo: '', //收货人地址信息
             orderDetail: [], //订单详情，包含商品列表
             showDetail: false, //是否显示订单详情
             payType: '', //支付类型
+            showPay: false, //是否显示支付弹窗
+            payImg: '', //微信支付的二维码地址
+            showPayModal: false, //是否显示二次支付确认弹窗
+            payment: 0, //订单总金额
+            T: '', //定时器ID
         };
     },
     mounted() {
@@ -118,18 +122,62 @@ export default {
     methods: {
         // 获取订单详情
         getOrderDetail() {
-            console.log(this.orderNo);
-            this.axios.get(`/orders/${this.orderNo}`).then(res => {
+            // console.log(this.orderId);
+            this.axios.get(`/orders/${this.orderId}`).then(res => {
                 let item = res.shippingVo;
                 this.addressInfo = `${item.receiverName} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
                 this.orderDetail = res.orderItemVoList;
+                this.payment = res.payment;
             });
         },
         paySubmit(payType) {
             if (payType == 1) {
                 // _blank打开新窗口
-                window.open('/#/order/alipay?orderId=' + this.orderNo, '_blank');
+                window.open('/#/order/alipay?orderId=' + this.orderId, '_blank');
+            } else {
+                this.axios
+                    .post('/pay', {
+                        orderId: this.orderId,
+                        orderName: 'Vue商城', //扫码支付时订单名称
+                        amount: 0.01, //单位元
+                        payType: 2, //1支付宝，2微信
+                    })
+                    .then(res => {
+                        // 后端返回的二维码字符串转换为二维码图片
+                        // 然后传递给ScanPayCode子组件
+                        QRCode.toDataURL(res.content)
+                            .then(url => {
+                                this.showPay = true;
+                                this.payImg = url;
+                                this.loopOrderState();
+                            })
+                            .catch(() => {
+                                this.$message.error('微信二维码生成失败，请稍后重试');
+                            });
+                    });
             }
+        },
+        // 关闭微信弹框
+        closePayModal() {
+            this.showPay = false;
+            this.showPayModal = true;
+            clearInterval(this.T);
+        },
+        // 轮询当前订单支付状态
+        loopOrderState() {
+            // 每1s调用一次
+            this.T = setInterval(() => {
+                this.axios.get(`orders/${this.orderId}`).then(res => {
+                    // 订单状态:0-已取消-10-未付款，20-已付款，40-已发货，50-交易成功，60-交易关闭
+                    if (res.status === 20) {
+                        clearInterval(this.T);
+                        this.goOrderList();
+                    }
+                });
+            }, 1000);
+        },
+        goOrderList() {
+            this.$router.push('/order/list');
         },
     },
 };

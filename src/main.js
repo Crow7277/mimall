@@ -21,27 +21,34 @@ axios.defaults.timeout = 8000;
 // axios.defaults.baseURL = env.baseURL;
 
 // axios响应拦截
-axios.interceptors.response.use(function (response) {
-    // 取到接口返回的值
-    let res = response.data;
-    // 获取路径
-    let path = location.hash;
-    if (res.status === 0) {
-        return res.data;
-    } else if (res.status === 10) {
-        // 当前项目中后端定义状态码为10时未登录
-        // 此时不使用路由跳转的原因是路由是在Vue实例中的，这里是取不到的
-        if (path !== '#/index') {
-            window.location.href = '/#/login';
+axios.interceptors.response.use(
+    function (response) {
+        // 取到接口返回的值
+        let res = response.data;
+        // 获取路径
+        let path = location.hash;
+        if (res.status === 0) {
+            return res.data;
+        } else if (res.status === 10) {
+            // 当前项目中后端定义状态码为10时未登录
+            // 此时不使用路由跳转的原因是路由是在Vue实例中的，这里是取不到的
+            if (path !== '#/index') {
+                window.location.href = '/#/login';
+            }
+            return Promise.reject(res);
+        } else {
+            // alert(res.msg);
+            Message.warning(res.msg);
+            // 失败的话将错误排除
+            return Promise.reject(res);
         }
-        return Promise.reject(res);
-    } else {
-        // alert(res.msg);
-        // Message.warning(res.msg);
-        // 失败的话将错误排除
-        return Promise.reject(res);
+    },
+    error => {
+        let res = error.response;
+        Message.warning(res.data.message);
+        return Promise.reject(error);
     }
-});
+);
 Vue.config.productionTip = false;
 Vue.prototype.axios = axios;
 
