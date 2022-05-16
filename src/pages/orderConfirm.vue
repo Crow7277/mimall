@@ -1,5 +1,10 @@
 <template>
     <div class="order-confirm">
+        <OrderHeader title="订单确认">
+            <template v-slot:tip>
+                <span>请认真填写收货地址</span>
+            </template>
+        </OrderHeader>
         <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
@@ -217,9 +222,10 @@
 
 <script>
 import Modal from '@/components/Modal.vue';
+import OrderHeader from '@/components/OrderHeader.vue';
 export default {
     name: 'order-confirm',
-    components: { Modal },
+    components: { Modal, OrderHeader },
     data() {
         return {
             list: [], //收获地址列表
