@@ -57,13 +57,19 @@
                         </div>
                     </div>
                     <el-pagination
+                        v-if="false"
                         class="pagination"
                         background
                         layout="prev, pager, next"
-                        :pageSize="pageSize"
+                        :page-size="pageSize"
                         :total="total"
                         @current-change="handleChange"
                     ></el-pagination>
+                    <div class="load-more">
+                        <el-button type="primary" :loading="loading" @click="loadMore">
+                            加载更多
+                        </el-button>
+                    </div>
                     <NoData v-if="!loading && list.length === 0"></NoData>
                 </div>
             </div>
@@ -75,14 +81,20 @@
 import OrderHeader from '@/components/OrderHeader.vue';
 import Loading from '@/components/Loading.vue';
 import NoData from '@/components/NoData.vue';
-import { Pagination } from 'element-ui';
+import { Pagination, Button } from 'element-ui';
 export default {
     name: 'order-list',
-    components: { OrderHeader, Loading, NoData, [Pagination.name]: Pagination },
+    components: {
+        OrderHeader,
+        Loading,
+        NoData,
+        [Pagination.name]: Pagination,
+        [Button.name]: Button,
+    },
     data() {
         return {
             list: [],
-            loading: true, //控制loading组件是否显示
+            loading: false, //控制loading组件是否显示
             pageSize: 10,
             pageNum: 1,
             total: 0,
@@ -93,6 +105,7 @@ export default {
     },
     methods: {
         getOrderList() {
+            this.loading = true;
             this.axios
                 .get('/orders', {
                     params: {
@@ -101,7 +114,9 @@ export default {
                 })
                 .then(res => {
                     this.loading = false;
-                    this.list = res.list;
+                    // this.list = res.list;
+                    // 点击加载更多时需要进行累加，而不是重新赋值
+                    this.list = this.list.concat(res.list);
                     this.total = res.total;
                 })
                 .catch(() => {
@@ -118,6 +133,10 @@ export default {
         },
         handleChange(pageNum) {
             this.pageNum = pageNum;
+            this.getOrderList();
+        },
+        loadMore() {
+            this.pageNum++;
             this.getOrderList();
         },
     },
