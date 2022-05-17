@@ -110,6 +110,7 @@ export default {
     data() {
         return {
             // 由于订单号是通过query的方式传递的因此可以直接利用query获取
+            // 由于orderId使用query方式获取，所以别组件发送过来时也要使用query方式传参
             orderId: this.$route.query.orderNo,
             addressInfo: '', //收货人地址信息
             orderDetail: [], //订单详情，包含商品列表
