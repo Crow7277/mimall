@@ -57,7 +57,6 @@
                         </div>
                     </div>
                     <el-pagination
-                        v-if="false"
                         class="pagination"
                         background
                         layout="prev, pager, next"
@@ -65,11 +64,6 @@
                         :total="total"
                         @current-change="handleChange"
                     ></el-pagination>
-                    <div class="load-more">
-                        <el-button type="primary" :loading="loading" @click="loadMore">
-                            加载更多
-                        </el-button>
-                    </div>
                     <NoData v-if="!loading && list.length === 0"></NoData>
                 </div>
             </div>
@@ -81,7 +75,7 @@
 import OrderHeader from '@/components/OrderHeader.vue';
 import Loading from '@/components/Loading.vue';
 import NoData from '@/components/NoData.vue';
-import { Pagination, Button } from 'element-ui';
+import { Pagination } from 'element-ui';
 export default {
     name: 'order-list',
     components: {
@@ -89,13 +83,12 @@ export default {
         Loading,
         NoData,
         [Pagination.name]: Pagination,
-        [Button.name]: Button,
     },
     data() {
         return {
             list: [],
             loading: false, //控制loading组件是否显示
-            pageSize: 10,
+            pageSize: 5,
             pageNum: 1,
             total: 0,
         };
@@ -109,14 +102,13 @@ export default {
             this.axios
                 .get('/orders', {
                     params: {
+                        pageSize: this.pageSize,
                         pageNum: this.pageNum,
                     },
                 })
                 .then(res => {
                     this.loading = false;
-                    // this.list = res.list;
-                    // 点击加载更多时需要进行累加，而不是重新赋值
-                    this.list = this.list.concat(res.list);
+                    this.list = res.list;
                     this.total = res.total;
                 })
                 .catch(() => {
@@ -133,10 +125,6 @@ export default {
         },
         handleChange(pageNum) {
             this.pageNum = pageNum;
-            this.getOrderList();
-        },
-        loadMore() {
-            this.pageNum++;
             this.getOrderList();
         },
     },
@@ -210,14 +198,6 @@ export default {
             }
             .el-pagination.is-background .el-pager li:not(.disabled).active {
                 background-color: #ff6600;
-            }
-            .el-button--primary {
-                background-color: #ff6600;
-                border-color: #ff6600;
-            }
-            .load-more,
-            .scroll-more {
-                text-align: center;
             }
         }
     }

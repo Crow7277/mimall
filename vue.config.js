@@ -16,4 +16,8 @@ module.exports = defineConfig({
             },
         },
     },
+    // publicPath: '/app',
+    // outputDir: 'dist',
+    // indexPath: 'index2.html',
+    productionSourceMap: false,
 });
